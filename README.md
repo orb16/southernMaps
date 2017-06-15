@@ -1,6 +1,10 @@
 # southernMaps
 
-Package of maps (for NZ) and assorted functions. The data include the following maps as SpatialPolygonsDataFrames:
+Package of maps (for NZ) and assorted functions. Why? The map('nzHires') doesn't work with WGS84 point data, and when you convert the LINZ map of NZ in WGS84, they don't line up:
+
+![bad maps](map_differences.png)
+
+The data include the following maps as SpatialPolygonsDataFrames:
 
 1. nzHigh (high res), nzMed, nzSml (low res) in NZTM
 2. nzHigh84, nzMed84, nzSml84 as above, but in WGS84.
