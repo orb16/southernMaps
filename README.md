@@ -5,6 +5,13 @@ Package of maps (for NZ) and assorted functions. The data include the following 
 1. nzHigh (high res), nzMed, nzSml (low res) in NZTM
 2. nzHigh84, nzMed84, nzSml84 as above, but in WGS84.
 
+install as follows (you'll need devtools installed (`install.packages('devtools')`))
+
+```{r}
+devtools::install_github("orb16/southernMaps")
+require(southernMaps)
+```
+
 examples:
 
 ```{r}
