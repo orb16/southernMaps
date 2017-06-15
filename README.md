@@ -24,7 +24,7 @@ examples:
 
 par(mfrow = c(1, 3))
 plot(nzHigh, main = "nzHigh", border = "red2")
-plot(nzMed, main = "nzMed, col = "orange")
+plot(nzMed, main = "nzMed", col = "orange")
 plot(nzSml, main = "nzSml")
 par(mfrow = c(1, 1))
 
