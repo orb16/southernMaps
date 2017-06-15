@@ -30,31 +30,31 @@ nzMed84 <- spTransform(nzMed, wgs84)
 nzSml84 <- spTransform(nzSml, wgs84)
 
 
-devtools::use_data(nzHigh)
-devtools::use_data(nzMed)
-devtools::use_data(nzSml)
+devtools::use_data(nzHigh, overwrite = TRUE)
+devtools::use_data(nzMed, overwrite = TRUE)
+devtools::use_data(nzSml, overwrite = TRUE)
 
-devtools::use_data(nzHigh84)
-devtools::use_data(nzMed84)
-devtools::use_data(nzSml84)
+devtools::use_data(nzHigh84, overwrite = TRUE)
+devtools::use_data(nzMed84, overwrite = TRUE)
+devtools::use_data(nzSml84, overwrite = TRUE)
 
 
 epsg_table <- make_EPSG()
 devtools::use_data(epsg_table)
 
 
-#
-# par(mfrow = c(1, 3))
-# plot(nzHigh, main = "nzHigh")
-# plot(nzMed, main = "nzMed")
-# plot(nzSml, main = "nzSml")
-# par(mfrow = c(1, 1))
-#
-# par(mfrow = c(1, 3))
-# plot(nzHigh[nzHigh@data$name == "Stewart Island/Rakiura", ], main = "nzHigh: Stewart Island")
-# plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewart Island")
-# plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
-# par(mfrow = c(1, 1))
+
+par(mfrow = c(1, 3))
+plot(nzHigh, main = "nzHigh")
+plot(nzMed, main = "nzMed")
+plot(nzSml, main = "nzSml")
+par(mfrow = c(1, 1))
+
+par(mfrow = c(1, 3))
+plot(nzHigh[nzHigh@data$name == "Stewart Island/Rakiura", ], main = "nzHigh: Stewart Island")
+plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewart Island")
+plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
+par(mfrow = c(1, 1))
 #
 # enicer_nztm <- broom::tidy(dfmap_smaller_simplif3)
 # nice_nztm <- broom::tidy(dfmap_smaller_simplif2)
