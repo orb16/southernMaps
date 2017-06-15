@@ -39,6 +39,8 @@ devtools::use_data(nzMed84)
 devtools::use_data(nzSml84)
 
 
+epsg_table <- make_EPSG()
+devtools::use_data(epsg_table)
 
 
 #
