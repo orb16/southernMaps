@@ -8,6 +8,16 @@
 
 find_CRS <- function(epsg = NULL, search = NULL){
 
+  if (!requireNamespace("sp", quietly = TRUE)) {
+    stop("the SP pkg needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+
+  if(is.null(epsg) & is.null(search)){
+    stop("Please specify either epsg or search term")
+  }
+
+
   if(!is.null(epsg) & !is.null(search)){
     stop("Please specify either epsg or search term, not both")
   }
@@ -15,7 +25,7 @@ find_CRS <- function(epsg = NULL, search = NULL){
   if(!is.null(epsg)){
     tab <- epsg_table[grep(paste("^", epsg, "$", sep = ""), epsg_table$code), ]
     if(nrow(tab) == 1){
-      myCRS <- CRS(tab[ , 3])
+      myCRS <- sp::CRS(tab[ , 3])
       return(myCRS)
     } else {stop("projection not found")}
   }
@@ -25,7 +35,7 @@ find_CRS <- function(epsg = NULL, search = NULL){
     tab <- epsg_table[grep(search, epsg_table$note), ]
     if(nrow(tab) == 1){
       print(paste("CRS for EPSG", tab[ , 1], "found", sep = " "))
-      myCRS <- CRS(tab[ , 3])
+      myCRS <- sp::CRS(tab[ , 3])
       return(myCRS)
     } else if(nrow(tab > 1)){
 
