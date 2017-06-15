@@ -56,13 +56,13 @@ plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewar
 plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
 par(mfrow = c(1, 1))
 #
-# enicer_nztm <- broom::tidy(dfmap_smaller_simplif3)
+# nicer_nztm <- broom::tidy(dfmap_smaller_simplif3)
 # nice_nztm <- broom::tidy(dfmap_smaller_simplif2)
 #
 #
-# nzmap_wgs84 <- spTransform(dfmap_smaller_simplif3, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs "))
+# nzmap_wgs84 <- spTransform(nzSml, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs "))
 #
-# nzmap_nzgd <- spTransform(dfmap_smaller_simplif3, CRS("+proj=longlat +ellps=intl +datum=nzgd49 +no_defs "))
+# nzmap_nzgd <- spTransform(nzSml, CRS("+proj=longlat +ellps=intl +datum=nzgd49 +no_defs "))
 #
 # nzpkg <- map_data("nz")
 # nzpkg2 <- nzpkg
@@ -92,11 +92,13 @@ par(mfrow = c(1, 1))
 #
 #
 # nzpkg4 <- SpatialPolygonsDataFrame(my_spatial_polys,
-# data.frame(group = unique(nzpkg2$group)))
+#                                    data.frame(group = unique(nzpkg2$group)))
 #
 #
-# plot(nzpkg4)
+# png(file = "map_differences.png", width = 210, height = 297, units = "mm", res = 400)
+# plot(nzpkg4, main = "Difference between map('NZ') and LINZ NZ map data")
 # plot(nzmap_wgs84, border = "cornflowerblue", add = TRUE)
+# dev.off()
 #
 #
 #
