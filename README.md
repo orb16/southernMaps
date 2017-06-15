@@ -24,11 +24,18 @@ plot(nzMed, main = "nzMed, col = "orange")
 plot(nzSml, main = "nzSml")
 par(mfrow = c(1, 1))
 
+# Stewart Island - shows difference in resolution 
+
 par(mfrow = c(1, 3))
 plot(nzHigh[nzHigh@data$name == "Stewart Island/Rakiura", ], main = "nzHigh: Stewart Island")
 plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewart Island")
 plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
 par(mfrow = c(1, 1))
 
+# get CRS for NZTM
+
+find_CRS(search = "New Zealand") 
+# gives 2 options, select NZTM. CRS code is in the "code" column
+find_CRS(epsg = "2193")
 
 ```
