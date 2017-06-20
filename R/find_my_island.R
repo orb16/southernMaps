@@ -21,6 +21,7 @@
 find_my_island <- function(islandname, proj = "wgs84"){
 
   wgs84 <- CRS("+init=epsg:3857 +proj=longlat ")
+  nztm <- CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
 
 
   tomatch <- tolower(paste(islandname,collapse="|"))
@@ -41,13 +42,18 @@ find_my_island <- function(islandname, proj = "wgs84"){
     stop("no matches found. please ensure spelling is correct. available islands are listed using: `detailed_nz_islands@data`")
   }
 
-  if(proj == "nztm"){
-    return(sel)
-  }  else if(proj == "wgs84"){
-    selSP <- spTransform(sel, wgs84 )
-    return(selSP)
-  } else{
+  if(!proj %in% c("wgs84", "nztm")) {
     stop("please choose either 'wgs84' or 'nztm' as the desired projection")
   }
+
+  if(proj == "nztm"){
+    selSP <- spTransform(sel, nztm)
+
+  }  else if(proj == "wgs84"){
+    selSP <- spTransform(sel, wgs84 )
+
+  }
+  return(selSP)
+
 
 }
