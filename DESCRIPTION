@@ -1,5 +1,5 @@
 Package: southernMaps
-Title: What the Package Does (one line, title case)
+Title: A package of maps and spatial function for NZ & surrounds.
 Version: 0.0.0.9000
 Authors@R: person("Olivia", "Burge", email = "olivia.burge@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
