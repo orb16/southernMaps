@@ -42,4 +42,14 @@ find_CRS(search = "New Zealand")
 # gives 2 options, select NZTM. CRS code is in the "code" column
 find_CRS(epsg = "2193")
 
+# get high res version of small islands:
+
+isle <- find_my_island("chatham", "wgs84")
+plot(isle)
+
+# or in NZTM:
+
+isle <- find_my_island("chatham", "nztm")
+plot(isle)
+
 ```
