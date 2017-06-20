@@ -10,6 +10,10 @@
 
 fortify_polygons <- function(shape, proj){
 
+  if(!require(broom)){
+    stop("the package broom is required for this function - please install it from CRAN")
+  }
+
   nztm <- CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
   wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
 
