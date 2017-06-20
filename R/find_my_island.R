@@ -13,6 +13,9 @@
 #' isle <- find_my_island("codfish", proj = "wgs84")
 #' plot(isle)
 #' isle@proj4string
+#' # multiple islands
+#' many <- find_my_island(c("auckland", "campbell"))
+#' plot(many)
 
 
 find_my_island <- function(islandname, proj = "wgs84"){
