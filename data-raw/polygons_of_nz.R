@@ -11,12 +11,19 @@ dfmap <- readOGR(dsn = "data-raw/lds-nz-coastlines-and-islands-polygons-topo-150
                  layer = "nz-coastlines-and-islands-polygons-topo-1500k")
 
 
+detailed_islands <- readOGR("data-raw/lds-nz-coastlines-and-islands-polygons-topo-150k-SHP",
+                            layer = "nz-coastlines-and-islands-polygons-topo-150k")
+
+
 dfmap_smaller <- dfmap[dfmap@data$name %in% c(
   "Stewart Island/Rakiura",
   "South Island or Te Waipounamu",
   "North Island or Te Ika-a-Māui"
 ),
 ]
+
+
+
 
 # relatively high level
 nzHigh <- SpatialPolygonsDataFrame(gSimplify(dfmap_smaller, 300, topologyPreserve = TRUE), dfmap_smaller@data)
@@ -38,9 +45,12 @@ devtools::use_data(nzHigh84, overwrite = TRUE)
 devtools::use_data(nzMed84, overwrite = TRUE)
 devtools::use_data(nzSml84, overwrite = TRUE)
 
-
+# whoel thing
+detailed_nz_islands <- detailed_islands
+devtools::use_data(detailed_nz_islands, overwrite = TRUE)
 epsg_table <- make_EPSG()
 devtools::use_data(epsg_table)
+
 
 
 
