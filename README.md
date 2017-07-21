@@ -16,6 +16,8 @@ devtools::install_github("orb16/southernMaps")
 require(southernMaps)
 ```
 
+**new:** now with vignette! After loading the package run `vignette("southernMaps-Vignette")` in R to read it! Read on for some basic examples too. 
+
 examples:
 
 ```{r}
