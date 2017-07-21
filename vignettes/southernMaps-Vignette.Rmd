@@ -24,7 +24,7 @@ If your data is in lat/lon, you want WGS84. The data load automatically, so you 
 
 The `map(nz)` command in base R returns different projection than expected (ie, not WGS84). If you want a map of NZ that's not too detailed, you can use `nzSml`.
 
-```{r, fig.cap= "A low-res map of NZ in base map"}
+```{r, fig.cap= "A low-res map of NZ in base map", fig.width = 8, fig.height = 6}
 par(mfrow = c(1, 2))
 plot(nzSml84)
 plot(nzSml84, axes = TRUE) # with basic axes
