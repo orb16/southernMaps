@@ -111,7 +111,7 @@ ggplot(many, aes(x = long,y  = lat)) +
 
 This has nothing to do with the southernMaps package, but for completeness, we use the `idf` plot from above and add to it. Firstly we create some "points", then add them. You will already have a dataframe it is assumed with the points in. Make sure it's in the same projection as the map! You can check a spatial file's projection like so: `isle@proj4string`. you can't do this with dataframes like `isle_df`. Note also that we specified in the `fortify_polygons` to convert to NZTM, so that's what it's in. 
 
-```{r}
+```{r, fig.width = 8, fig.height = 7}
 
 some_points <- data.frame(longitude = runif(8, min = min(isle_df$long) + 0.0001, max = max(isle_df$long) - 0.0001),
                           latitude = runif(8, min = min(isle_df$lat) + 0.0001, max = max(isle_df$lat) - 0.0001),

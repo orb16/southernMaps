@@ -55,7 +55,7 @@ ggplot(many, aes(x = long,y  = lat)) +
   labs(title = "Offshore islands", subtitle = "Auckland and Campbell islands") + 
   theme_void() # no axes, nothing 
 
-## ------------------------------------------------------------------------
+## ---- fig.width = 8, fig.height = 7--------------------------------------
 
 some_points <- data.frame(longitude = runif(8, min = min(isle_df$long) + 0.0001, max = max(isle_df$long) - 0.0001),
                           latitude = runif(8, min = min(isle_df$lat) + 0.0001, max = max(isle_df$lat) - 0.0001),
