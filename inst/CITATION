@@ -1,0 +1,13 @@
+citHeader("To cite southernMaps in publications use:")
+
+citEntry(entry = "Manual",
+title = "southernMaps: A package of maps and spatial function for NZ & surrounds",
+author = person(given = "Olivia Rata", family = "Burge",, email = "olivia.burge@gmail.com", comment = c(ORCID = "0000-0001-7719-6695"),
+role = c("aut", "cre")),
+year = "2017",
+note = "R package version 0.0.9",
+url = "http://github.com/orb16/southernMaps",
+doi = "10.5281/zenodo.810564",
+
+textVersion = paste("Olivia R. Burge (2017) southernMaps. R package version 0.0.9. http://github.com/orb16/southernMaps DOI: 10.5281/zenodo.810564")
+)
