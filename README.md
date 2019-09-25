@@ -12,7 +12,10 @@ The data include the following maps as SpatialPolygonsDataFrames:
 install as follows (you'll need devtools installed (`install.packages('devtools')`))
 
 ```{r}
-devtools::install_github("orb16/southernMaps")
+# devtools::install_github("orb16/southernMaps")
+# update
+# to get the vignette to build, use the code below
+devtools::install_github("orb16/southernMaps", build_opts = c("--no-resave-data", "--no-manual"))
 require(southernMaps)
 ```
 
