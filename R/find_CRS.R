@@ -2,8 +2,12 @@
 #' @param epsg the epsg name - in character
 #' @param search Search term - e.g. "New Zealand"
 #' @keywords epsg
+#' @import sp
+#' @importFrom rlang .data
 #' @export
 #' @examples
+#' # Find crs for NZTM, which is epsg 2193
+#' find_CRS(epsg = "2193")
 
 
 find_CRS <- function(epsg = NULL, search = NULL){

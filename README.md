@@ -1,5 +1,7 @@
 # southernMaps
 
+[![DOI](https://zenodo.org/badge/94381659.svg)](https://zenodo.org/badge/latestdoi/94381659)
+
 Package of maps (for NZ) and assorted functions. Why? The map('nzHires') doesn't work with all WGS84 point data (you can end up in the ocean for surprisingly terrestrial points), and when you convert the LINZ map of NZ in WGS84, they don't line up:
 
 ![bad maps](map_differences.png)

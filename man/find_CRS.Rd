@@ -14,4 +14,8 @@ find_CRS(epsg = NULL, search = NULL)
 \description{
 This function allows you to go from shp to df, and specify a projection
 }
+\examples{
+# Find crs for NZTM, which is epsg 2193
+find_CRS(epsg = "2193")
+}
 \keyword{epsg}

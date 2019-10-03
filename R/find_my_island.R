@@ -4,6 +4,9 @@
 #' @param islandname The name of the island you are looking for
 #' @param proj The name of the projection you would like the shapefile returned inCurrently either only "wgs84" or "nztm"
 #' @keywords transform reproject map
+#' @importFrom magrittr "%>%"
+#' @importFrom rlang .data
+#' @import sp dplyr broom
 #' @export
 #' @examples
 #' isle <- find_my_island("codfish", proj = "nztm")
@@ -20,8 +23,8 @@
 
 find_my_island <- function(islandname, proj = "wgs84"){
 
-  wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
-  nztm <- CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
+  wgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
+  nztm <- sp::CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
 
 
   tomatch <- tolower(paste(islandname,collapse="|"))
@@ -30,7 +33,8 @@ find_my_island <- function(islandname, proj = "wgs84"){
   sel <- detailed_nz_islands[apply(detailed_nz_islands@data, 1, function(row) length(grep(tomatch, tolower(row)))>0), ]
 
   matches <- sel@data[ c(1, 6) ]
-  matches <- matches %>% group_by(name, grp_name) %>% slice(1) %>% data.frame() %>% droplevels()
+  matches <- matches %>%
+    dplyr::group_by(., name, grp_name) %>% dplyr::slice(1) %>% data.frame() %>% droplevels()
 
   if(nrow(matches) > 0){
 
@@ -47,10 +51,10 @@ find_my_island <- function(islandname, proj = "wgs84"){
   }
 
   if(proj == "nztm"){
-    selSP <- spTransform(sel, nztm)
+    selSP <- sp::spTransform(sel, nztm)
 
   }  else if(proj == "wgs84"){
-    selSP <- spTransform(sel, wgs84 )
+    selSP <- sp::spTransform(sel, wgs84 )
 
   }
   return(selSP)

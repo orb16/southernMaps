@@ -66,6 +66,56 @@ Note the `theme` and `coord_map` and `labs` arguments. If you aren't already fam
 
 All of the above also applies to `nzMed` and `nzHigh`. 
 
+## Creating a spatial points dataframe from a normal dataframe
+
+This is useful when you want to do spatial functions on your data, but also can be useful for plotting. 
+
+```{r}
+tp <- data.frame(
+Island = c("South Island", "North Island",
+"North Island", "Stewart Island", "South Island"),
+City = c("Christchurch", "Wellington", "Auckland", "Oban", "Dunedin"),
+long = c(172.63333,174.77557, 174.76667, 168.12736, 170.50361),
+lat = c(-43.53333, -41.28664, -36.86667, -46.89881, -45.87416))
+
+wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
+# we know nztm isespg2193
+nztm <- find_CRS(epsg = "2193")
+
+spatialCities <- spatial_df(data = tp, xcol = "long", ycol = "lat",
+crs = wgs84)
+
+cols <- c("forestgreen", "navyblue", "violetred4")
+isl <- c("North Island", "South Island", "Stewart Island")
+
+mapColours <- data.frame(cols = I(cols), isl)
+
+plot(nzSml84, col  = "grey", border = NA)
+text(spatialCities, col = mapColours$cols[match(spatialCities$Island, mapColours$isl)],
+label = spatialCities$City, cex = 1)
+legend("topleft", text.col = mapColours$cols,
+legend = mapColours$isl,
+pch = 16)
+
+
+```
+
+Next example - use the spatial object to get distances between cities
+
+```{r}
+
+
+# example - transform to NZTM, 
+# get distance between cities
+# divide it by 1000 to get km
+
+citiesNZTM <- sp::spTransform(spatialCities,
+                              CRSobj = nztm)
+
+rgeos::gDistance(citiesNZTM, byid = TRUE) / 1000
+
+```
+
 ## Plotting small islands in high resolution
 
 This section also relates to plotting small areas of NZ in high detail. The key function is `find_my_island()`, which returns islands from the data object `detailed_nz_islands`. It returns the islands its found by searching across the various shapefile fields. Easiest to show by example:

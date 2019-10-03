@@ -4,15 +4,11 @@
 #' @param shape The name of your shapefile object
 #' @param proj The name of the projection. Currently either only "wgs84" or "nztm"
 #' @keywords transform reproject
+#' @import sp dplyr broom
 #' @export
-#' @examples
 
 
 fortify_polygons <- function(shape, proj){
-
-  if(!require(broom)){
-    stop("the package broom is required for this function - please install it from CRAN")
-  }
 
   nztm <- CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
   wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
@@ -22,14 +18,14 @@ fortify_polygons <- function(shape, proj){
   }
 
   if(proj %in% c("NZTM", "nztm")){
-    shapell <- spTransform(shape, CRSobj = nztm)
+    shapell <- sp::spTransform(shape, CRSobj = nztm)
   } else if(proj %in% c("WGS84", "wgs84")){
-    shapell <- spTransform(shape, CRSobj = wgs84)
+    shapell <- sp::spTransform(shape, CRSobj = wgs84)
   } else{
     stop("Only nztm and wgs84 projections currently allowed. Submit a pull request or issue if you want another one")
   }
   shapell@data$id <- rownames(shapell@data)
-  fortified <- tidy(shapell, region = "id")
+  fortified <- broom::tidy(shapell, region = "id")
   newname = merge(fortified, shapell@data)
   return(newname)
 }
