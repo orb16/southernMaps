@@ -1,4 +1,4 @@
-# southernMaps
+# southernMaps <img src='man/figures/logo.png' align="right" height="139" />
 
 [![DOI](https://zenodo.org/badge/94381659.svg)](https://zenodo.org/badge/latestdoi/94381659)
 
