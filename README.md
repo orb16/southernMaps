@@ -19,6 +19,15 @@ install as follows (you'll need devtools installed (`install.packages('devtools'
 # to get the vignette to build, use the code below
 devtools::install_github("orb16/southernMaps", build_opts = c("--no-resave-data", "--no-manual"))
 require(southernMaps)
+
+# if this errors because of a dependency issue ("error converted from warning")
+# try this instead:
+
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
+devtools::install_github("orb16/southernMaps", build_opts = c("--no-resave-data", "--no-manual"))
+# might as well restart R here, then load pacakge
+require(southernMaps)
+
 ```
 
 **new:** now with vignette! After loading the package run `vignette("southernMaps-Vignette")` in R to read it! Read on for some basic examples too. 
