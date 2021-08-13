@@ -74,9 +74,15 @@ nzMed84 <- nzMed %>% st_transform(., wgs84)
 nzSml84 <- nzSml %>% st_transform(., wgs84)
 
 
+nzSml84_old <- as_Spatial(nzSml84)
+nzSml_old <- as_Spatial(nzSml)
+
 usethis::use_data(nzHigh, overwrite = TRUE)
 usethis::use_data(nzMed, overwrite = TRUE)
 usethis::use_data(nzSml, overwrite = TRUE)
+
+usethis::use_data(nzSml_old, overwrite = TRUE)
+usethis::use_data(nzSml84_old, overwrite = TRUE)
 
 usethis::use_data(nzHigh84, overwrite = TRUE)
 usethis::use_data(nzMed84, overwrite = TRUE)

@@ -1,7 +1,7 @@
 Package: southernMaps
 Title: A package of maps and spatial function for NZ & surrounds
 Version: 0.0.0.9000
-Authors@R: person("Olivia", "Burge", email = "olivia.burge@gmail.com", role = c("aut", "cre"))
+Authors@R: c(person("Olivia", "Burge", email = "olivia.burge@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7719-6695")), person("Jacqui", "Vanderhoorn", role = c("ctb")))
 Description: A package of maps and spatial function for NZ & surrounds. Correct map for NZ unlike the baked-in map. 
 Depends:
     R (>= 3.3.2),
