@@ -4,11 +4,13 @@
 \name{detailed_nz_islands}
 \alias{detailed_nz_islands}
 \title{detailed_nz_islands}
-\format{A SpatialPolygonsDataframe object with many
+\format{
+A SpatialPolygonsDataframe object with many
 \describe{
   \item{name}{Name of the island}
   ...
-}}
+}
+}
 \source{
 \url{www.data.linz.govt.nz}
 }

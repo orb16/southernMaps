@@ -1,55 +1,93 @@
 require(maps)
 require(mapdata)
 require(sp)
+require(dplyr)
+require(usethis)
 require(ggplot2)
 require(rgeos)
 require(rgdal)
+require(rmapshaper)
 
 setwd("~/Documents/southernMaps/")
 
-dfmap <- readOGR(dsn = "data-raw/lds-nz-coastlines-and-islands-polygons-topo-1500k-SHP",
+dfmap <- st_read(dsn = "data-raw/lds-nz-coastlines-and-islands-polygons-topo-1500k-SHP",
                  layer = "nz-coastlines-and-islands-polygons-topo-1500k")
 
 
-detailed_islands <- readOGR("data-raw/lds-nz-coastlines-and-islands-polygons-topo-150k-SHP",
+detailed_islands <- st_read("data-raw/lds-nz-coastlines-and-islands-polygons-topo-150k-SHP",
                             layer = "nz-coastlines-and-islands-polygons-topo-150k")
 
 
-dfmap_smaller <- dfmap[dfmap@data$name %in% c(
-  "Stewart Island/Rakiura",
-  "South Island or Te Waipounamu",
-  "North Island or Te Ika-a-Māui"
-),
-]
+dfmap_smaller <- dfmap %>%
+  filter(name %in% c(
+    "Stewart Island/Rakiura",
+    "South Island or Te Waipounamu"
+  ) | grepl("or Te Ika", name))
 
 
+dfmap_smaller2 <- dfmap %>%
+  st_crop(st_bbox(dfmap_smaller)) %>%
+  dplyr::mutate(area = as.numeric(st_area(.))) %>%
+  dplyr::filter(area >= 80000000)
 
 
 # relatively high level
-nzHigh <- SpatialPolygonsDataFrame(gSimplify(dfmap_smaller, 300, topologyPreserve = TRUE), dfmap_smaller@data)
-nzMed <- SpatialPolygonsDataFrame(gSimplify(dfmap_smaller, 500, topologyPreserve = TRUE), dfmap_smaller@data)
-nzSml <- SpatialPolygonsDataFrame(gSimplify(dfmap_smaller, 2000, topologyPreserve = TRUE), dfmap_smaller@data)
+spat <- as_Spatial(dfmap_smaller)
+nzHigh <- ms_simplify(dfmap_smaller2, 0.13)
+nzHighOld <- SpatialPolygonsDataFrame(gSimplify(spat, 300, topologyPreserve = TRUE),
+                                      spat@data)
 
-wgs84 <- CRS("+init=epsg:3857 +proj=longlat ")
-
-nzHigh84 <- spTransform(nzHigh, wgs84)
-nzMed84 <- spTransform(nzMed, wgs84)
-nzSml84 <- spTransform(nzSml, wgs84)
+par(mfrow = c(1,2))
+plot(nzHigh %>% st_geometry())
+plot(nzHighOld)
 
 
-devtools::use_data(nzHigh, overwrite = TRUE)
-devtools::use_data(nzMed, overwrite = TRUE)
-devtools::use_data(nzSml, overwrite = TRUE)
+nzMed <- ms_simplify(dfmap_smaller2, 0.07)
+nzMedOld <- SpatialPolygonsDataFrame(gSimplify(spat, 500, topologyPreserve = TRUE),
+                                     spat@data)
 
-devtools::use_data(nzHigh84, overwrite = TRUE)
-devtools::use_data(nzMed84, overwrite = TRUE)
-devtools::use_data(nzSml84, overwrite = TRUE)
+mapview::npts(nzMed)
+mapview::npts(st_as_sf(nzMedOld))
+
+par(mfrow = c(1,2))
+plot(nzMed %>% st_geometry())
+plot(nzMedOld)
+
+
+nzSml <- ms_simplify(dfmap_smaller2, 0.03)
+nzSmlOld <- SpatialPolygonsDataFrame(gSimplify(spat, 2000, topologyPreserve = TRUE),
+                                     spat@data)
+
+mapview::npts(nzSml)
+mapview::npts(st_as_sf(nzSmlOld))
+
+par(mfrow = c(1,2))
+plot(nzSml %>% st_geometry(),main = "New")
+plot(nzSmlOld, main = "Old")
+
+
+
+wgs84 <- st_crs("EPSG:4326")
+
+nzHigh84 <- nzHigh %>% st_transform(., wgs84)
+nzMed84 <- nzMed %>% st_transform(., wgs84)
+nzSml84 <- nzSml %>% st_transform(., wgs84)
+
+
+usethis::use_data(nzHigh, overwrite = TRUE)
+usethis::use_data(nzMed, overwrite = TRUE)
+usethis::use_data(nzSml, overwrite = TRUE)
+
+usethis::use_data(nzHigh84, overwrite = TRUE)
+usethis::use_data(nzMed84, overwrite = TRUE)
+usethis::use_data(nzSml84, overwrite = TRUE)
+
 
 # whoel thing
 detailed_nz_islands <- detailed_islands
-devtools::use_data(detailed_nz_islands, overwrite = TRUE)
+usethis::use_data(detailed_nz_islands, overwrite = TRUE)
 epsg_table <- make_EPSG()
-devtools::use_data(epsg_table)
+usethis::use_data(epsg_table)
 
 
 

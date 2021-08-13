@@ -4,11 +4,13 @@
 \name{epsg_table}
 \alias{epsg_table}
 \title{epsg_table}
-\format{A SpatialPolygonsDataframe object with many
+\format{
+A SpatialPolygonsDataframe object with many
 \describe{
   \item{name}{Name of the island}
   ...
-}}
+}
+}
 \source{
 \url{www.data.linz.govt.nz}
 }

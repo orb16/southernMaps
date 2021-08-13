@@ -22,75 +22,68 @@ If your data is in lat/lon, you want WGS84. The data load automatically, so you 
 
 ## NZ maps
 
-The `map(nz)` command in base R returns different projection than expected (ie, not WGS84). If you want a map of NZ that's not too detailed, you can use `nzSml`.
+The `map(nz)` command in base R returns different projection than expected (ie, not WGS84). If you want a map of NZ that's not too detailed, you can use `nzSml`. Note we use the `sf` package now!
 
 ```{r, fig.cap= "A low-res map of NZ in base map", fig.width = 8, fig.height = 6}
 par(mfrow = c(1, 2))
-plot(nzSml84)
-plot(nzSml84, axes = TRUE) # with basic axes
+plot(st_geometry(nzSml84))
+plot(st_geometry(nzSml84), axes = TRUE) # with basic axes
 par(mfrow = c(1,1))
 ```
 
-If you want to plot it in **ggplot2**, you need to convert to a dataframe. Use the `fortify_polygons()` function. 
+If you want to plot it in **ggplot2**, you can use the `geom_sf` function in the `sf` package
+
 
 ```{r}
-nz_DF84 <- fortify_polygons(shape = nzSml84, proj = "wgs84")
-```
 
-Note that you specify the projection you want back. This can be useful if you have a shapefile in an old format (e.g. NZMG) and want to go to either WGS84 or NZTM. 
-
-```{r}
-nz_DF <- fortify_polygons(shape = nzSml84, proj = "nztm")
 
 require(ggplot2)
 
-ggplot(nz_DF, aes(x = long, y = lat)) + 
-  geom_polygon() + 
+ggplot() + 
+  geom_sf(data = nzSml84) + 
   theme_minimal()
 ```
 
-That doesn't look very good. We need to specify which polygons should be drawn independently. For example, the North Island should be drawn as a stand-along polygon, not connected to Stewart Island. We use the `group` argument for this:
+Minor amendments to remove the lat/long references and the gridlines:
 
 ```{r}
 
-ggplot(nz_DF84, aes(x = long, y = lat)) + 
-  geom_polygon(aes(group = group)) + 
+ggplot() + 
+  geom_sf(data = nzSml84) + 
   theme_minimal() +
-  coord_map() + 
-  labs(x = "Longitude E", y = "Latitude S") +
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank())
 
 ```
 
-Note the `theme` and `coord_map` and `labs` arguments. If you aren't already familiar with **ggplot2**, try commenting them out and see the difference.
 
 All of the above also applies to `nzMed` and `nzHigh`. 
 
 ## Creating a spatial points dataframe from a normal dataframe
 
-This is useful when you want to do spatial functions on your data, but also can be useful for plotting. 
+This is useful when you want to do spatial functions on your data, but also can be useful for plotting. Here we create a base R object, and also convert the sf map object to a SpatialPolygonsDataFrame object using `as_Spatial`. 
 
 ```{r}
 tp <- data.frame(
-Island = c("South Island", "North Island",
-"North Island", "Stewart Island", "South Island"),
-City = c("Christchurch", "Wellington", "Auckland", "Oban", "Dunedin"),
-long = c(172.63333,174.77557, 174.76667, 168.12736, 170.50361),
-lat = c(-43.53333, -41.28664, -36.86667, -46.89881, -45.87416))
+  Island = c("South Island", "North Island",
+             "North Island", "Stewart Island", "South Island"),
+  City = c("Christchurch", "Wellington", "Auckland", "Oban", "Dunedin"),
+  long = c(172.63333,174.77557, 174.76667, 168.12736, 170.50361),
+  lat = c(-43.53333, -41.28664, -36.86667, -46.89881, -45.87416))
 
 wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
 # we know nztm isespg2193
 nztm <- find_CRS(epsg = "2193")
 
 spatialCities <- spatial_df(data = tp, xcol = "long", ycol = "lat",
-crs = wgs84)
+                            crs = wgs84)
 
 cols <- c("forestgreen", "navyblue", "violetred4")
 isl <- c("North Island", "South Island", "Stewart Island")
 
 mapColours <- data.frame(cols = I(cols), isl)
 
-plot(nzSml84, col  = "grey", border = NA)
+plot(nzSml84 %>% as_Spatial(), col  = "grey", border = NA)
 text(spatialCities, col = mapColours$cols[match(spatialCities$Island, mapColours$isl)],
 label = spatialCities$City, cex = 1)
 legend("topleft", text.col = mapColours$cols,
@@ -129,11 +122,12 @@ plot(isle)
 And to plot in **ggplot2**:
 
 ```{r}
-isle_df <- fortify_polygons(isle, "wgs84")
+isle_codfish <- st_as_sf(isle) 
 
-idf <- ggplot(isle_df, aes(x = long, y = lat)) +
+idf <- ggplot() +
+  geom_sf(data = isle_codfish, colour = "grey",
+          fill = "white") +
   geom_polygon(colour = "grey", fill = "white")+
-  coord_map() + 
   labs(x = "Longitude E", y = "Latitude S", 
        title = "Codfish Island") 
 
@@ -145,14 +139,13 @@ You can also do multiple islands at once:
 ```{r}
 # multiple islands
 many <- find_my_island(c("auckland", "campbell")) %>%
-  fortify_polygons("nztm")
+  st_as_sf(.)
 
 # the chain command %>% is from dplyr
 # just skips the intermediate assignment
 
-ggplot(many, aes(x = long,y  = lat)) +
-  geom_path(aes(group = group)) +
-  coord_equal() + 
+ggplot() +
+  geom_sf(data = many) +
   labs(title = "Offshore islands", subtitle = "Auckland and Campbell islands") + 
   theme_void() # no axes, nothing 
 ```
@@ -163,23 +156,33 @@ This has nothing to do with the southernMaps package, but for completeness, we u
 
 ```{r, fig.width = 8, fig.height = 7}
 
-some_points <- data.frame(longitude = runif(8, min = min(isle_df$long) + 0.0001, max = max(isle_df$long) - 0.0001),
-                          latitude = runif(8, min = min(isle_df$lat) + 0.0001, max = max(isle_df$lat) - 0.0001),
-                          type = c(rep("Control", 4), rep("Treatment", 4)),
-                          siteName = c("Umbrella", "Peach", "Car", "Dog", "Film", "Laptop", "Backpack", "Plate"))
+some_points <- st_sample(isle_codfish, size= 8) %>%
+  st_as_sf(.) %>%
+  mutate(type = c(rep("Control", 4), rep("Treatment", 4)),
+         siteName = c("Umbrella", "Peach", "Car", "Dog", 
+                      "Film", "Laptop", "Backpack", "Plate"))
+
 
 idf +
-  geom_point(data = some_points, aes(x = longitude, y = latitude, fill = type),
-             shape = 21, colour = "black") +
+  geom_sf(data = some_points, aes(fill = type),
+          shape = 21, colour = "black") +
   scale_fill_manual(values = c("black", "white")) +
   theme(legend.position = "bottom") +
   labs(fill = "Treatment") +
-  geom_text(data = some_points %>% filter(siteName != "Backpack"), aes(x = longitude, y = latitude, label = siteName),
-            nudge_x = 0.001, 
+  geom_sf_text(data = some_points %>% filter(siteName != "Dog") %>% 
+                 filter(siteName != "Peach"), 
+          aes(label = siteName),
+            nudge_x = 50, 
             hjust = 0) +
-    geom_text(data = some_points %>% filter(siteName == "Backpack"), aes(x = longitude, y = latitude, label = siteName),
-            nudge_x = 0.0005,
-            nudge_y = -0.001,
+    geom_sf_text(data = some_points %>% filter(siteName == "Dog"), 
+            aes(label = siteName),
+            nudge_x = 70,
+            nudge_y = -100,
+            hjust = 0) +
+      geom_sf_text(data = some_points %>% filter(siteName == "Peach"), 
+            aes(label = siteName),
+            nudge_x = 70,
+            nudge_y = 100,
             hjust = 0)
 ```
 

@@ -4,11 +4,13 @@
 \name{nzSml84}
 \alias{nzSml84}
 \title{nzSml84}
-\format{A SpatialPolygonsDataframe object with 3 features
+\format{
+A SpatialPolygonsDataframe object with 3 features
 \describe{
   \item{name}{Name of the island}
   ...
-}}
+}
+}
 \source{
 \url{www.data.linz.govt.nz}
 }
