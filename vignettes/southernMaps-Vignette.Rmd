@@ -115,7 +115,7 @@ This section also relates to plotting small areas of NZ in high detail. The key 
 
 
 ```{r}
-isle <- detailed_nz_islands %>% filter(grepl("codfish", tolower(name)))#find_my_island("codfish", proj = "nztm") #detailed_nz_islands %>% filter(grepl("codfish", tolower(name)))#
+isle <- find_my_island("codfish", proj = "nztm") #detailed_nz_islands %>% filter(grepl("codfish", tolower(name)))#
 plot(isle)
 ```
 
@@ -137,8 +137,8 @@ You can also do multiple islands at once:
 
 ```{r}
 # multiple islands
-many <- detailed_nz_islands %>% filter(grepl("auckland|campbell", tolower(grp_name)) |
-                                         grepl("auckland|campbell", tolower(name))) #find_my_island(c("auckland", "campbell"))
+many <- find_my_island(c("auckland", "campbell"))#detailed_nz_islands %>% filter(grepl("auckland|campbell", tolower(grp_name)) |
+                                        # grepl("auckland|campbell", tolower(name))) #find_my_island(c("auckland", "campbell"))
 
 
 
