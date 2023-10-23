@@ -29,7 +29,7 @@ find_my_island <- function(islandname, proj = "wgs84"){
   tomatch <- tolower(paste(islandname,collapse="|"))
 
   
-  sel <- detailed_nz_islands %>%
+  sel <- southernMaps::detailed_nz_islands %>%
     filter(grepl(tomatch, tolower(name)) |
              grepl(tomatch, tolower(macronated)) |
              grepl(tomatch, tolower(grp_macron))|
