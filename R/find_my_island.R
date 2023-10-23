@@ -6,16 +6,16 @@
 #' @keywords transform reproject map
 #' @importFrom magrittr "%>%"
 #' @importFrom rlang .data
-#' @import sp dplyr broom
+#' @import sf dplyr broom
 #' @export
 #' @examples
 #' isle <- find_my_island("codfish", proj = "nztm")
 #' plot(isle)
-#' isle@proj4string
+#' st_crs(isle)
 #' # for wgs84
 #' isle <- find_my_island("codfish", proj = "wgs84")
 #' plot(isle)
-#' isle@proj4string
+#' isle
 #' # multiple islands
 #' many <- find_my_island(c("auckland", "campbell"))
 #' plot(many)
@@ -23,17 +23,23 @@
 
 find_my_island <- function(islandname, proj = "wgs84"){
 
-  wgs84 <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
-  nztm <- sp::CRS("+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
-
+  wgs84 <- st_crs(4326) 
+  nztm <- st_crs(2193) 
 
   tomatch <- tolower(paste(islandname,collapse="|"))
 
+  
+  sel <- detailed_nz_islands %>%
+    filter(grepl(tomatch, tolower(name)) |
+             grepl(tomatch, tolower(macronated)) |
+             grepl(tomatch, tolower(grp_macron))|
+             grepl(tomatch, tolower(grp_ascii)) |
+             grepl(tomatch, tolower(grp_name)) |
+             grepl(tomatch, tolower(name_ascii)))
 
-  sel <- detailed_nz_islands[apply(detailed_nz_islands@data, 1, function(row) length(grep(tomatch, tolower(row)))>0), ]
 
-  matches <- sel@data[ c(1, 6) ]
-  matches <- matches %>%
+  matches <- sel %>%
+    dplyr::select(name, grp_name) %>%
     dplyr::group_by(., name, grp_name) %>% dplyr::slice(1) %>% data.frame() %>% droplevels()
 
   if(nrow(matches) > 0){
@@ -51,10 +57,10 @@ find_my_island <- function(islandname, proj = "wgs84"){
   }
 
   if(proj == "nztm"){
-    selSP <- sp::spTransform(sel, nztm)
+    selSP <- sf::st_transform(sel, nztm)
 
   }  else if(proj == "wgs84"){
-    selSP <- sp::spTransform(sel, wgs84 )
+    selSP <-  sf::st_transform(sel, wgs84 )
 
   }
   return(selSP)

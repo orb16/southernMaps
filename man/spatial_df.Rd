@@ -29,8 +29,8 @@ City = c("Christchurch", "Wellington", "Auckland", "Oban", "Dunedin"),
 long = c(172.63333,174.77557, 174.76667, 168.12736, 170.50361),
 lat = c(-43.53333, -41.28664, -36.86667, -46.89881, -45.87416))
 
-wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
-# we know nztm isespg2193
+wgs84 <- st_crs(4326)
+# we know nztm is espg2193
 nztm <- find_CRS(epsg = "2193")
 
 spatialCities <- spatial_df(data = tp, xcol = "long", ycol = "lat",

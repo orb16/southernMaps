@@ -13,6 +13,7 @@ vignette: >
 
 `r require(southernMaps)`
 
+
 This package aims to provide Southern Hemisphere maps in easy forms for use. Therefore it provides functions, but also datasets. The datasets, for easy reference, are:
 
 (1) nzSml, nzMed, nzHigh - shapefiles of the NZ coastline in NZTM projection
@@ -61,7 +62,6 @@ All of the above also applies to `nzMed` and `nzHigh`.
 
 ## Creating a spatial points dataframe from a normal dataframe
 
-This is useful when you want to do spatial functions on your data, but also can be useful for plotting. Here we create a base R object, and also convert the sf map object to a SpatialPolygonsDataFrame object using `as_Spatial`. 
 
 ```{r}
 tp <- data.frame(
@@ -71,9 +71,8 @@ tp <- data.frame(
   long = c(172.63333,174.77557, 174.76667, 168.12736, 170.50361),
   lat = c(-43.53333, -41.28664, -36.86667, -46.89881, -45.87416))
 
-wgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ")
-# we know nztm isespg2193
-nztm <- find_CRS(epsg = "2193")
+wgs84 <- st_crs(4326) 
+nztm <- st_crs(2193)
 
 spatialCities <- spatial_df(data = tp, xcol = "long", ycol = "lat",
                             crs = wgs84)
@@ -83,12 +82,12 @@ isl <- c("North Island", "South Island", "Stewart Island")
 
 mapColours <- data.frame(cols = I(cols), isl)
 
-plot(nzSml84 %>% as_Spatial(), col  = "grey", border = NA)
-text(spatialCities, col = mapColours$cols[match(spatialCities$Island, mapColours$isl)],
-label = spatialCities$City, cex = 1)
-legend("topleft", text.col = mapColours$cols,
-legend = mapColours$isl,
-pch = 16)
+ggplot() +
+  geom_sf(data = nzSml, fill = "grey", col = NA) +
+  geom_sf(data = spatialCities, aes(colour = Island),
+          size = 2) +
+  theme_minimal() + 
+  scale_colour_manual(values = cols)
 
 
 ```
@@ -100,12 +99,13 @@ Next example - use the spatial object to get distances between cities
 
 # example - transform to NZTM, 
 # get distance between cities
-# divide it by 1000 to get km
+# use the units package to convert to km
 
-citiesNZTM <- sp::spTransform(spatialCities,
-                              CRSobj = nztm)
+citiesNZTM <- st_transform(spatialCities,
+                              crs = 2193)
 
-rgeos::gDistance(citiesNZTM, byid = TRUE) / 1000
+sf::st_distance(citiesNZTM, byid = TRUE) %>%
+  units::set_units(., "km")
 
 ```
 
@@ -115,17 +115,16 @@ This section also relates to plotting small areas of NZ in high detail. The key 
 
 
 ```{r}
-isle <- find_my_island("codfish", proj = "nztm")
+isle <- detailed_nz_islands %>% filter(grepl("codfish", tolower(name)))#find_my_island("codfish", proj = "nztm") #detailed_nz_islands %>% filter(grepl("codfish", tolower(name)))#
 plot(isle)
 ```
 
 And to plot in **ggplot2**:
 
 ```{r}
-isle_codfish <- st_as_sf(isle) 
 
 idf <- ggplot() +
-  geom_sf(data = isle_codfish, colour = "grey",
+  geom_sf(data = isle, colour = "grey",
           fill = "white") +
   geom_polygon(colour = "grey", fill = "white")+
   labs(x = "Longitude E", y = "Latitude S", 
@@ -138,11 +137,10 @@ You can also do multiple islands at once:
 
 ```{r}
 # multiple islands
-many <- find_my_island(c("auckland", "campbell")) %>%
-  st_as_sf(.)
+many <- detailed_nz_islands %>% filter(grepl("auckland|campbell", tolower(grp_name)) |
+                                         grepl("auckland|campbell", tolower(name))) #find_my_island(c("auckland", "campbell"))
 
-# the chain command %>% is from dplyr
-# just skips the intermediate assignment
+
 
 ggplot() +
   geom_sf(data = many) +
@@ -152,11 +150,11 @@ ggplot() +
 
 ## Adding points
 
-This has nothing to do with the southernMaps package, but for completeness, we use the `idf` plot from above and add to it. Firstly we create some "points", then add them. You will already have a dataframe it is assumed with the points in. Make sure it's in the same projection as the map! You can check a spatial file's projection like so: `isle@proj4string`. you can't do this with dataframes like `isle_df`. Note also that we specified in the `fortify_polygons` to convert to NZTM, so that's what it's in. 
+This has nothing to do with the southernMaps package, but for completeness, we use the `idf` plot from above and add to it. Firstly we create some "points", then add them. You will already have a dataframe it is assumed with the points in. Make sure it's in the same projection as the map! You can check a spatial file's projection like so: `st_crs(isle)`. you can't do this with dataframes like `isle_df`. 
 
 ```{r, fig.width = 8, fig.height = 7}
 
-some_points <- st_sample(isle_codfish, size= 8) %>%
+some_points <- st_sample(isle, size= 8) %>%
   st_as_sf(.) %>%
   mutate(type = c(rep("Control", 4), rep("Treatment", 4)),
          siteName = c("Umbrella", "Peach", "Car", "Dog", 

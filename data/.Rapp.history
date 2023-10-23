@@ -1,0 +1,3 @@
+load("/Users/oliviaburge/Documents/gitRepos/southernMaps/data/detailed_nz_islands.rda")
+class(detailed_nz_islands)
+q('no')

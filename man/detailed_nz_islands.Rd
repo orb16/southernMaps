@@ -5,7 +5,7 @@
 \alias{detailed_nz_islands}
 \title{detailed_nz_islands}
 \format{
-A SpatialPolygonsDataframe object with many
+An sf object with many
 \describe{
   \item{name}{Name of the island}
   ...
@@ -18,7 +18,7 @@ A SpatialPolygonsDataframe object with many
 detailed_nz_islands
 }
 \description{
-A SpatialPolygonsDataframe of New Zealand in high resolutiono of a lot
+An sf object of New Zealand in high resolutiono of a lot
 of islands. Do not plot! But if you wish to extract islands manually
 you can use this object.
 }

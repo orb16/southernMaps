@@ -5,7 +5,7 @@
 \alias{nzHigh}
 \title{nzHigh}
 \format{
-A SpatialPolygonsDataframe object with 3 features
+An sf object with 3 features
 \describe{
   \item{name}{Name of the island}
   ...
@@ -18,6 +18,6 @@ A SpatialPolygonsDataframe object with 3 features
 nzHigh
 }
 \description{
-A SpatialPolygonsDataframe of New Zealand in high resolution and nztm projection
+An sf of New Zealand in high resolution and nztm projection
 }
 \keyword{datasets}

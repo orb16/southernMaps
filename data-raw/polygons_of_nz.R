@@ -1,14 +1,10 @@
-require(maps)
-require(mapdata)
 require(sp)
 require(dplyr)
 require(usethis)
 require(ggplot2)
-require(rgeos)
-require(rgdal)
 require(rmapshaper)
 
-setwd("~/Documents/southernMaps/")
+setwd("~/Documents/gitRepos/southernMaps/")
 
 dfmap <- st_read(dsn = "data-raw/lds-nz-coastlines-and-islands-polygons-topo-1500k-SHP",
                  layer = "nz-coastlines-and-islands-polygons-topo-1500k")
@@ -33,37 +29,29 @@ dfmap_smaller2 <- dfmap %>%
 
 # relatively high level
 spat <- as_Spatial(dfmap_smaller)
-nzHigh <- ms_simplify(dfmap_smaller2, 0.13)
-nzHighOld <- SpatialPolygonsDataFrame(gSimplify(spat, 300, topologyPreserve = TRUE),
-                                      spat@data)
+nzHigh <- rmapshaper::ms_simplify(dfmap_smaller2, 0.13)
 
-par(mfrow = c(1,2))
+
+
 plot(nzHigh %>% st_geometry())
-plot(nzHighOld)
 
 
-nzMed <- ms_simplify(dfmap_smaller2, 0.07)
-nzMedOld <- SpatialPolygonsDataFrame(gSimplify(spat, 500, topologyPreserve = TRUE),
-                                     spat@data)
 
-mapview::npts(nzMed)
-mapview::npts(st_as_sf(nzMedOld))
+nzMed <- rmapshaper::ms_simplify(dfmap_smaller2, 0.07)
 
-par(mfrow = c(1,2))
+# 
+# mapview::npts(nzMed)
+# mapview::npts(st_as_sf(nzMedOld))
+
 plot(nzMed %>% st_geometry())
-plot(nzMedOld)
 
 
-nzSml <- ms_simplify(dfmap_smaller2, 0.03)
-nzSmlOld <- SpatialPolygonsDataFrame(gSimplify(spat, 2000, topologyPreserve = TRUE),
-                                     spat@data)
 
-mapview::npts(nzSml)
-mapview::npts(st_as_sf(nzSmlOld))
+nzSml <- rmapshaper::ms_simplify(dfmap_smaller2, 0.03)
 
-par(mfrow = c(1,2))
-plot(nzSml %>% st_geometry(),main = "New")
-plot(nzSmlOld, main = "Old")
+
+# mapview::npts(nzSml)
+# mapview::npts(st_as_sf(nzSmlOld))
 
 
 
@@ -74,15 +62,10 @@ nzMed84 <- nzMed %>% st_transform(., wgs84)
 nzSml84 <- nzSml %>% st_transform(., wgs84)
 
 
-nzSml84_old <- as_Spatial(nzSml84)
-nzSml_old <- as_Spatial(nzSml)
 
 usethis::use_data(nzHigh, overwrite = TRUE)
 usethis::use_data(nzMed, overwrite = TRUE)
 usethis::use_data(nzSml, overwrite = TRUE)
-
-usethis::use_data(nzSml_old, overwrite = TRUE)
-usethis::use_data(nzSml84_old, overwrite = TRUE)
 
 usethis::use_data(nzHigh84, overwrite = TRUE)
 usethis::use_data(nzMed84, overwrite = TRUE)
@@ -92,8 +75,6 @@ usethis::use_data(nzSml84, overwrite = TRUE)
 # whoel thing
 detailed_nz_islands <- detailed_islands
 usethis::use_data(detailed_nz_islands, overwrite = TRUE)
-epsg_table <- make_EPSG()
-usethis::use_data(epsg_table)
 
 
 
@@ -105,9 +86,12 @@ plot(nzSml, main = "nzSml")
 par(mfrow = c(1, 1))
 
 par(mfrow = c(1, 3))
-plot(nzHigh[nzHigh@data$name == "Stewart Island/Rakiura", ], main = "nzHigh: Stewart Island")
-plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewart Island")
-plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
+plot(nzHigh %>% filter(name == "Stewart Island/Rakiura", ) %>%
+       st_geometry(), main = "nzHigh: Stewart Island")
+plot(nzMed %>% filter(name == "Stewart Island/Rakiura", ) %>%
+       st_geometry(), main = "nzMed: Stewart Island")
+plot(nzSml %>% filter(name == "Stewart Island/Rakiura", ) %>%
+       st_geometry(), main = "nzSml: Stewart Island")
 par(mfrow = c(1, 1))
 #
 # nicer_nztm <- broom::tidy(dfmap_smaller_simplif3)

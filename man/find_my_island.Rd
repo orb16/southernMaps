@@ -17,11 +17,11 @@ This function allows you to go from shp to df, and specify a projection
 \examples{
 isle <- find_my_island("codfish", proj = "nztm")
 plot(isle)
-isle@proj4string
+st_crs(isle)
 # for wgs84
 isle <- find_my_island("codfish", proj = "wgs84")
 plot(isle)
-isle@proj4string
+isle
 # multiple islands
 many <- find_my_island(c("auckland", "campbell"))
 plot(many)
