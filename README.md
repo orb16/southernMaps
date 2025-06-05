@@ -30,7 +30,7 @@ require(southernMaps)
 
 ```
 
-**new:** now with vignette! After loading the package run `vignette("southernMaps-Vignette")` in R to read it! Read on for some basic examples too. 
+**new:** now with vignette! After loading the package run `vignette("southernMaps-Vignette")` in R to read it! Read on for some basic examples too. Note that now all the objects are *sf*, to plot a plain map, you need to just do `r st_geometry(objectname)` or `r objectname %>% st_geometry()` to plot it as you would expect from a SpatialPolygonsDataFrame (old style).
 
 examples:
 
@@ -39,33 +39,34 @@ examples:
 # whole country 
 
 par(mfrow = c(1, 3))
-plot(nzHigh, main = "nzHigh", border = "red2")
-plot(nzMed, main = "nzMed", col = "orange")
-plot(nzSml, main = "nzSml")
+plot(nzHigh %>% st_geometry(), main = "nzHigh", border = "red2")
+plot(nzMed %>% st_geometry(), main = "nzMed", col = "grey", border = NA)
+plot(nzSml %>% st_geometry(), main = "nzSml")
 par(mfrow = c(1, 1))
 
 # Stewart Island - shows difference in resolution 
 
 par(mfrow = c(1, 3))
-plot(nzHigh[nzHigh@data$name == "Stewart Island/Rakiura", ], main = "nzHigh: Stewart Island")
-plot(nzMed[nzMed@data$name == "Stewart Island/Rakiura", ], main = "nzMed: Stewart Island")
-plot(nzSml[nzSml@data$name == "Stewart Island/Rakiura", ], main = "nzSml: Stewart Island")
+plot(nzHigh %>% filter(name == "Stewart Island/Rakiura") %>% st_geometry(), main = "nzHigh: Stewart Island")
+plot(nzMed %>% filter(name == "Stewart Island/Rakiura") %>% st_geometry(), main = "nzMed: Stewart Island")
+plot(nzSml %>% filter(name == "Stewart Island/Rakiura") %>% st_geometry(), main = "nzSml: Stewart Island")
 par(mfrow = c(1, 1))
 
 # get CRS for NZTM
+We used to have a function for this but under sf package it's somewhat superceded. Just google "epsg" and the projection you want (e.g. NZTM) and you can then use it with `r st_crs()`
 
-find_CRS(search = "New Zealand") 
-# gives 2 options, select NZTM. CRS code is in the "code" column
-find_CRS(epsg = "2193")
+# e.g. for NZTM
+st_crs(2193)
 
 # get high res version of small islands:
 
 isle <- find_my_island("chatham", "wgs84")
 plot(isle)
+plot(st_geometry(isle), main = "Chatham Islands")
 
 # or in NZTM:
 
 isle <- find_my_island("chatham", "nztm")
-plot(isle)
+plot(isle %>% st_geometry(), main = "Chatham Islands")
 
 ```
