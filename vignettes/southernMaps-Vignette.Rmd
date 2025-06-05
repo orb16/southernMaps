@@ -92,6 +92,14 @@ ggplot() +
 
 ```
 
+```{css, echo=FALSE}
+.reveal .map img {
+  height: 80vh;
+  width: auto !important;
+  padding-left: 2em;
+}
+```
+
 Next example - use the spatial object to get distances between cities
 
 ```{r}
